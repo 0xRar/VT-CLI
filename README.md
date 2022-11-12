@@ -1,6 +1,6 @@
 <hr />
 <p align="center">
-    <img src="https://github.com/0xRar/VT-CLI/raw/main/images/logo.png" width=400px>
+    <img src="https://github.com/0xRar/VT-CLI/raw/main/images/logo.png" width=600px>
     <br />
     <br />
     A VirusTotal CLI tool.
