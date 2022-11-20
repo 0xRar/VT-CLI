@@ -3,14 +3,10 @@
     <img src="https://github.com/0xRar/VT-CLI/raw/main/images/logo.png" width=600px>
     <br />
     <br />
-    A VirusTotal CLI tool.
+    A Basic VirusTotal CLI tool.
 </p>
 <hr />
 
-[VirusTotal]: https://www.virustotal.com/
-[VirusTotal REST API v3]: https://developers.virustotal.com/reference/overview
-[vt-py]: https://github.com/VirusTotal/vt-py/ 
-[issue]: https://github.com/0xRar/VT-CLI/issues
 
 **VT-CLI** is a [VirusTotal] command-line interface tool where
 you can scan/analyze suspicious links and files, developed for practice and personal use. 
@@ -78,5 +74,7 @@ discuss what you're trying to fix.
    - https://docs.github.com/en/get-started/quickstart/contributing-to-projects
 
 
-## TODO
-- File Scan Functionality
+[VirusTotal]: https://www.virustotal.com/
+[VirusTotal REST API v3]: https://developers.virustotal.com/reference/overview
+[vt-py]: https://github.com/VirusTotal/vt-py/ 
+[issue]: https://github.com/0xRar/VT-CLI/issues
