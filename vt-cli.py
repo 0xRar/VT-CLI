@@ -1,5 +1,4 @@
 import argparse
-import json
 import os
 import random
 import string
@@ -17,10 +16,6 @@ By: Isa Ebrahim - 0xRar (2022)
 Discord: 0xRar#4432
 ==================================
 """
-
-load_dotenv(dotenv_path="config/.env")
-token = os.getenv("VT_TOKEN")
-client = vt.Client(token)
 
 # Formatting variables
 init(autoreset=True)
@@ -53,7 +48,7 @@ def banner():
     print(ascii.format(b, b, w, w, b, b, c, c, w))
 
 
-def url_last_analysis(url: str):
+def url_last_analysis(url: str, client: vt.Client):
     """
     Get Information About a URL/DOMAIN
     """
@@ -79,11 +74,10 @@ def url_last_analysis(url: str):
         print(url_err)
     
     finally:
-        client.close()
         print(completed)
 
 
-def url_scanner(url: str):
+def url_scanner(url: str, client: vt.Client):
     """
     Scans and submit url's to detect malware and other breaches.
     """
@@ -112,24 +106,10 @@ def url_scanner(url: str):
         print(url_err)
 
     finally:
-        client.close()
         print(completed)
 
-    # n = 7
-    # rnd_str = "".join(random.choices(string.ascii_letters, k=n))
 
-    # with open(f"{rnd_str}-output.json", "w") as f:
-    #     json_object = json.dumps(analysis_result, indent=4)
-    #     f.write(json_object)
-        # f.close()
-
-    # client.close()
-
-    # print(Fore.GREEN + "[+] Analysis Completed" + Fore.RESET)
-    # print(Fore.GREEN + f"[+] Output saved to {rnd_str}-url_output.json" + Fore.RESET)
-
-
-def file_last_analysis(hash):
+def file_last_analysis(hash, client: vt.Client):
     """
     Get Information About a File
     """
@@ -161,11 +141,10 @@ def file_last_analysis(hash):
         print(hash_err)
 
     finally:
-        client.close()
         print(completed)
 
 
-# def file_scanner(path):
+# def file_scanner(path, client: vt.Client):
 #     """
 #     Scans and submit file's to detect malware and other breaches.
 #     """
@@ -197,7 +176,6 @@ def file_last_analysis(hash):
 #         print(hash_err)
 
 #     finally:
-#         client.close()
 #         print(completed)
 
 
@@ -206,17 +184,23 @@ def main():
     Main function to rule them all. ¯\_(ツ)_/¯
     """
 
+    load_dotenv(dotenv_path="config/.env")
+    token = os.getenv("VT_TOKEN")
+    client = vt.Client(token)
+
     if args.url_analysis:  # url analysis stats
-        url_last_analysis(url=args.url_analysis)
+        url_last_analysis(url=args.url_analysis, client=client)
 
     elif args.url_scan:  # url scanner
-        url_scanner(url=args.url_scan)
+        url_scanner(url=args.url_scan, client=client)
 
     elif args.file_analysis:  # file analysis stats
-        file_last_analysis(hash=args.file_analysis)
+        file_last_analysis(hash=args.file_analysis, client=client)
 
     elif args.file_scan:  # file scanner
-        file_scanner(path=args.file_scan)
+        file_scanner(path=args.file_scan, client=client)
+
+    client.close()
 
 
 if __name__ == "__main__":
