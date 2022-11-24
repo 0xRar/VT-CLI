@@ -3,33 +3,39 @@
     <img src="https://github.com/0xRar/VT-CLI/raw/main/images/logo.png" width=600px>
     <br />
     <br />
-    A Basic VirusTotal CLI tool.
+    A Basic VirusTotal CLI Script.
 </p>
 <hr />
 
 
-**VT-CLI** is a [VirusTotal] command-line interface tool where
+**VT-CLI** is a [VirusTotal] command-line interface script where
 you can scan/analyze suspicious links and files, developed for practice and personal use. 
 
-the tool is written based on the [vt-py] library presented by Virus Total themselves 
+the script is written based on the [vt-py] library presented by Virus Total themselves 
 as the main dependency to interact with [VirusTotal REST API v3].
 
 
 ## Installation
-- Run the following commands to install the dependencies:
 
-```
-pip install -r requirements.txt
-```
+- Clone the repository:
+    ```
+    $ git clone https://github.com/0xRar/VT-CLI.git
+    ```
+
+- Install the dependencies:
+    ```
+    $ pip install -r requirements.txt
+    ```
 
 
-> ⚠️To run the tool you're going to need a virustotal account so you can get your api key: https://www.virustotal.com/gui/my-apikey
+> ⚠️To run the script you're going to need a virustotal account so you can get 
+your api key: https://www.virustotal.com/gui/my-apikey
 
 
 - And for the final step add your virustotal api key in `config/.env`:
-```
-VT_TOKEN=YOUR_API_KEY_HERE
-```
+    ```
+    VT_TOKEN=YOUR_API_KEY_HERE
+    ```
 
 
 ## Usage
@@ -44,23 +50,23 @@ arguments:
 ```
 
 ```
-python main.py -h
+$ python vt-cli.py -h
 ```
 
 ## Examples
 - url/domain analysis:
 ```
-python main.py -an https://example.com/
+$ python vt-cli.py -an https://example.com/
 ```
 
 - url/domain scanning:
 ```
-python main.py -scan https://example.com/
+$ python vt-cli.py -scan https://example.com/
 ```
 
 - file hash analysis:
 ```
-python main.py -anf 021a24e99694ff7d91a6864e1b443c8e8df5c9a415486ac359eb403d6453b46c
+$ python vt-cli.py -anf 021a24e99694ff7d91a6864e1b443c8e8df5c9a415486ac359eb403d6453b46c
 ```
 
 ## Contributing
@@ -72,6 +78,13 @@ discuss what you're trying to fix.
 
 - How to contribute?
    - https://docs.github.com/en/get-started/quickstart/contributing-to-projects
+
+<hr>
+
+## Credits
+[mgmacias95](https://github.com/mgmacias95): For helping me with fixing a client error & 
+helping others trying to make scripts with the [vt-py] library, just scrolling through the
+issues you will see how much Marta contributed ❤.
 
 
 [VirusTotal]: https://www.virustotal.com/
