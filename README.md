@@ -79,7 +79,6 @@ discuss what you're trying to fix.
 - How to contribute?
    - https://docs.github.com/en/get-started/quickstart/contributing-to-projects
 
-<hr>
 
 ## Credits
 [mgmacias95](https://github.com/mgmacias95): For helping me with fixing a client error & 
