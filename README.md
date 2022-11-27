@@ -55,23 +55,30 @@ $ python vt-cli.py -h
 
 ## Examples
 - url/domain analysis:
-```
-$ python vt-cli.py -an https://example.com/
-```
+    ```
+    $ python vt-cli.py -an https://example.com/
+    ```
 
 - url/domain scanning:
-```
-$ python vt-cli.py -scan https://example.com/
-```
+    ```
+    $ python vt-cli.py -scan https://example.com/
+    ```
 
 - file hash analysis:
-```
-$ python vt-cli.py -anf 021a24e99694ff7d91a6864e1b443c8e8df5c9a415486ac359eb403d6453b46c
-```
+    ```
+    $ python vt-cli.py -anf 021a24e99694ff7d91a6864e1b443c8e8df5c9a415486ac359eb403d6453b46c
+    ```
+
+- file scan/analysis:
+    ```
+    $ python vt-cli.py -scanf ~/Desktop/test_file.exe
+    ```
+     **⚠️ this will submit the file to virustotal so make sure it doesn't contain private info.**
 
 ## Contributing
-There are no set rules for contributions just make sure your code fixes
-a certain issue, add a functionality or make the code better. 
+- make sure your code fixes a certain issue 
+- add a functionality
+- make the code better & matches the current code style. 
 
 ⚠️before contibuting its recommended to open up an [issue] to
 discuss what you're trying to fix.
