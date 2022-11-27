@@ -1,21 +1,22 @@
+#!/usr/bin/env python
+
+"""
+********************************************************************************
+Copyright (c) 2022 vt-cli developer (Isa Ebrahim - 0xRar)  (https://0xrar.net/)
+Discord: 0xRar#4432
+********************************************************************************
+"""
+
 import argparse
+import hashlib
 import os
 import random
 import string
 import sys
-from pprint import pprint
 
 import vt
 from colorama import Fore, init
 from dotenv import load_dotenv
-
-"""
-==================================
-Virus Total CLI
-By: Isa Ebrahim - 0xRar (2022)
-Discord: 0xRar#4432
-==================================
-"""
 
 # Formatting variables
 init(autoreset=True)
@@ -28,9 +29,9 @@ y = Fore.YELLOW
 r = Fore.RED
 
 completed = g + '[+] Analysis Completed'
-url_err = r + '[-] The expected input is a url, something went wrong please try again.'
-hash_err = r + '[-] The expected input is a [SHA-256, SHA-1 or MD5] hash, something went wrong please try again.'
-
+url_err = r + '[-] expected a url, something went wrong please try again.'
+hash_err = r + '[-] expected a [SHA-256, SHA-1 or MD5] hash, something went wrong please try again.'
+file_hash_err = r + '[-] expected a path/to/file, something went wrong please try again.'
 
 def banner():
     ascii = """
@@ -42,10 +43,9 @@ def banner():
     {}    \/      |_|       \_____|______|_____|
     
     {}[ Coded By Isa Ebrahim (0xRar) - 2022 ]
-    {}[     -h to display help message      ]
     {}
     """
-    print(ascii.format(b, b, w, w, b, b, c, c, w))
+    print(ascii.format(b, b, w, w, b, b, c, w))
 
 
 def url_last_analysis(url: str, client: vt.Client):
@@ -72,8 +72,9 @@ def url_last_analysis(url: str, client: vt.Client):
 
     except:
         print(url_err)
-    
-    finally:
+        sys.exit('Exiting due to a wrong url.')
+
+    else:
         print(completed)
 
 
@@ -104,14 +105,15 @@ def url_scanner(url: str, client: vt.Client):
 
     except:
         print(url_err)
+        sys.exit('Exiting due to a wrong url.')
 
-    finally:
+    else:
         print(completed)
 
 
 def file_last_analysis(hash, client: vt.Client):
     """
-    Get Information About a File
+    Get Information About a File Hash
     """
 
     # Acceptable Hashes: SHA-256, SHA-1 or MD5
@@ -139,44 +141,44 @@ def file_last_analysis(hash, client: vt.Client):
 
     except:
         print(hash_err)
+        sys.exit('Exiting due to a wrong file hash type.')
 
-    finally:
+    else:
         print(completed)
 
 
-# def file_scanner(path, client: vt.Client):
-#     """
-#     Scans and submit file's to detect malware and other breaches.
-#     """
+def file_scanner(path, client: vt.Client):
+    """
+    Scans/Analyze and submit file's to detect malware and other breaches.
+    """ 
 
-#     try:
-#         with open(path, "rb") as f:
-#             scan = client.scan_file(f)
+    try:
+        with open(path, "rb") as f:
+            if os.path.isfile(path):                
+                hash = hashlib.file_digest(f, "md5").hexdigest()
+                scan = client.scan_file(f)
+                hash_obj = client.get_object("/files/{}", hash)
 
-#             while True:
-#                 analysis = client.get_object("/analyses/{}", analysis.id)
-#                 if analysis.status == "completed":
-#                     break
-                
-#                 output = f"""
-#                 Analysis for: {y + hash + Fore.RESET}
+                output = f"""
+                Analysis for: {y + hash + Fore.RESET}
 
-#                 First Submission Date: {hash_obj.first_submission_date}
-#                 Last Submission Date: {hash_obj.last_submission_date}
-#                 Times Submitted: {hash_obj.times_submitted}
-#                 File Size: {hash_obj.size}
-#                 File Type: {hash_obj.type_tag}
-#                 File Type Description: {hash_obj.type_description}
-#                 Stats: {hash_obj.last_analysis_stats}
-#                 """
+                First Submission Date: {hash_obj.first_submission_date}
+                Last Submission Date: {hash_obj.last_submission_date}
+                Times Submitted: {hash_obj.times_submitted}
+                File Size: {hash_obj.size}
+                File Type Description: {hash_obj.type_description}
+                Stats: {hash_obj.last_analysis_stats}
+                """
 
-#                 print('\n{}\n{}\n{}'.format(dashes, output, dashes))
+                print('\n{}\n{}\n{}'.format(dashes, output, dashes))
+                f.close()
 
-#     except:
-#         print(hash_err)
+    except FileNotFoundError:
+        print(file_hash_err)
+        sys.exit('Exiting due to file not found')
 
-#     finally:
-#         print(completed)
+    else:
+        print(completed)
 
 
 def main():
@@ -205,7 +207,7 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        epilog="\tExample: \r\npython " + sys.argv[0] + " -h"
+        epilog="\tExample: \r\npython " + sys.argv[0] + " -an https://google.com/"
     )
 
     parser.add_argument(
@@ -236,6 +238,11 @@ if __name__ == "__main__":
         help="file location to scan and detect malware and other breaches",
     )
     args = parser.parse_args()
+    
+    if len(sys.argv) < 2:
+        banner()
+        parser.print_usage()
+        sys.exit(1)
 
     banner()
     main()
