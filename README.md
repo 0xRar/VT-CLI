@@ -8,6 +8,7 @@
 <hr />
 
 
+## What is VT-CLI
 **VT-CLI** is a [VirusTotal] command-line interface script where
 you can scan/analyze suspicious links and files, developed for practice and personal use. 
 
@@ -38,15 +39,21 @@ your api key: https://www.virustotal.com/gui/my-apikey
     ```
 
 
+## Screenshots ✨📸
+![image](https://user-images.githubusercontent.com/33517160/204376807-b954b062-96b7-47da-8efe-cd5f8b643909.png)
+
+
 ## Usage
 ```
-arguments:
-
+options:
+  
 -h, --help          show this help message and exit
--an URL_ANALYSIS   url to get the last analysis stats
--scan URL_SCAN      url to scan and detect malware and other breaches
--anf FILE_ANALYSIS  file hash[SHA-256, SHA-1, MD5] to get the last analysis stats
--scanf FILE_SCAN    file location to scan and detect malware and other breaches
+-an                 url to get the last analysis stats
+-scan               url to scan and detect malware and other breaches
+-anf                file hash[SHA-256, SHA-1, MD5] to get the last analysis stats
+-scanf              file location to scan and detect malware and other breaches
+
+Example: python vt-cli.py -an https://google.com/
 ```
 
 ```

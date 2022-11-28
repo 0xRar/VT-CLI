@@ -17,6 +17,7 @@ import sys
 import vt
 from colorama import Fore, init
 from dotenv import load_dotenv
+from prettytable import PrettyTable
 
 # Formatting variables
 init(autoreset=True)
@@ -28,10 +29,11 @@ g = Fore.GREEN
 y = Fore.YELLOW
 r = Fore.RED
 
-completed = g + '[+] Analysis Completed'
-url_err = r + '[-] expected a url, something went wrong please try again.'
-hash_err = r + '[-] expected a [SHA-256, SHA-1 or MD5] hash, something went wrong please try again.'
-file_hash_err = r + '[-] expected a path/to/file, something went wrong please try again.'
+completed = g + "[+] Analysis Completed\n"
+url_err = r + "[-] expected a url, something went wrong please try again.\n"
+hash_err = r + "[-] expected a [SHA-256, SHA-1 or MD5] hash, something went wrong please try again.\n"
+file_hash_err = r + "[-] expected a path/to/file, something went wrong please try again.\n"
+
 
 def banner():
     ascii = """
@@ -42,7 +44,7 @@ def banner():
     {}   \  /     | |      | |____| |____ _| |_ 
     {}    \/      |_|       \_____|______|_____|
     
-    {}[ Coded By Isa Ebrahim (0xRar) - 2022 ]
+    {}\t\t\t By Isa Ebrahim - 0xRar
     {}
     """
     print(ascii.format(b, b, w, w, b, b, c, w))
@@ -68,11 +70,16 @@ def url_last_analysis(url: str, client: vt.Client):
         Stats: {url_obj.last_analysis_stats}
         """
 
-        print('\n{}\n{}\n{}'.format(dashes, output, dashes))
+        output_table = PrettyTable()
+        output_table.field_names = ["Results"]
+        output_table.align = "l"
+        output_table.add_rows([[output]])
+
+        print(output_table)
 
     except:
         print(url_err)
-        sys.exit('Exiting due to a wrong url.')
+        sys.exit("Exiting due to a wrong url.")
 
     else:
         print(completed)
@@ -84,11 +91,11 @@ def url_scanner(url: str, client: vt.Client):
     """
 
     try:
-        # scan's and submit the url 
+        # scan's and submit the url
         scan = client.scan_url(url, wait_for_completion=True)
-        
+
         url_id = vt.url_id(url)
-        url_obj = client.get_object("/urls/{}", url_id) 
+        url_obj = client.get_object("/urls/{}", url_id)
 
         output = f"""
         Analysis for: {y + url + Fore.RESET}
@@ -101,11 +108,16 @@ def url_scanner(url: str, client: vt.Client):
         Stats: {url_obj.last_analysis_stats}
         """
 
-        print('\n{}\n{}\n{}'.format(dashes, output, dashes))
+        output_table = PrettyTable()
+        output_table.field_names = ["Results"]
+        output_table.align = "l"
+        output_table.add_rows([[output]])
+
+        print(output_table)
 
     except:
         print(url_err)
-        sys.exit('Exiting due to a wrong url.')
+        sys.exit("Exiting due to a wrong url.")
 
     else:
         print(completed)
@@ -115,14 +127,8 @@ def file_last_analysis(hash, client: vt.Client):
     """
     Get Information About a File Hash
     """
-
-    # Acceptable Hashes: SHA-256, SHA-1 or MD5
-    # Examples:
-    # 021a24e99694ff7d91a6864e1b443c8e8df5c9a415486ac359eb403d6453b46c
-    # 84d3573747fbdf7ca822fd5a48726484c8b617e74a920dc2a68dd039b8f576fd
-    # f8c974a6572fd522a64d22da3bf36db7e912ccb700bd41623ed286f1e8b0e939
-    # 44d88612fea8a8f36de82e1278abb02f
-    try: 
+    
+    try:
         hash_obj = client.get_object("/files/{}", hash)
 
         output = f"""
@@ -137,11 +143,16 @@ def file_last_analysis(hash, client: vt.Client):
         Stats: {hash_obj.last_analysis_stats}
         """
 
-        print('\n{}\n{}\n{}'.format(dashes, output, dashes))
+        output_table = PrettyTable()
+        output_table.field_names = ["Results"]
+        output_table.align = "l"
+        output_table.add_rows([[output]])
+
+        print(output_table)
 
     except:
         print(hash_err)
-        sys.exit('Exiting due to a wrong file hash type.')
+        sys.exit("Exiting due to a wrong file hash type.")
 
     else:
         print(completed)
@@ -150,17 +161,17 @@ def file_last_analysis(hash, client: vt.Client):
 def file_scanner(path, client: vt.Client):
     """
     Scans/Analyze and submit file's to detect malware and other breaches.
-    """ 
+    """
 
     try:
         with open(path, "rb") as f:
-            if os.path.isfile(path):                
+            if os.path.isfile(path):
                 hash = hashlib.file_digest(f, "md5").hexdigest()
                 scan = client.scan_file(f)
                 hash_obj = client.get_object("/files/{}", hash)
 
                 output = f"""
-                Analysis for: {y + hash + Fore.RESET}
+                Analysis for: {y + os.path.basename(path) + Fore.RESET}
 
                 First Submission Date: {hash_obj.first_submission_date}
                 Last Submission Date: {hash_obj.last_submission_date}
@@ -170,12 +181,17 @@ def file_scanner(path, client: vt.Client):
                 Stats: {hash_obj.last_analysis_stats}
                 """
 
-                print('\n{}\n{}\n{}'.format(dashes, output, dashes))
+                output_table = PrettyTable()
+                output_table.field_names = ["Results"]
+                output_table.align = "l"
+                output_table.add_rows([[output]])
+
+                print(output_table)
                 f.close()
 
     except FileNotFoundError:
         print(file_hash_err)
-        sys.exit('Exiting due to file not found')
+        sys.exit("Exiting due to file not found")
 
     else:
         print(completed)
@@ -212,7 +228,6 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "-an",
-        "--analyze_url",
         dest="url_analysis",
         type=str,
         help="url to get the last analysis stats",
@@ -238,7 +253,7 @@ if __name__ == "__main__":
         help="file location to scan and detect malware and other breaches",
     )
     args = parser.parse_args()
-    
+
     if len(sys.argv) < 2:
         banner()
         parser.print_usage()
