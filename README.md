@@ -33,7 +33,7 @@ as the main dependency to interact with [VirusTotal REST API v3].
 your api key: https://www.virustotal.com/gui/my-apikey
 
 
-- And for the final step add your virustotal api key in `config/.env`:
+- And for the final step add your virustotal api key in [`config/.env`](https://github.com/0xRar/VT-CLI/blob/main/config/.env):
     ```
     VT_TOKEN=YOUR_API_KEY_HERE
     ```
