@@ -33,17 +33,18 @@ completed = g + "[+] Analysis Completed\n"
 url_err = r + "[-] expected a url, something went wrong please try again.\n"
 hash_err = r + "[-] expected a [SHA-256, SHA-1 or MD5] hash, something went wrong please try again.\n"
 file_hash_err = r + "[-] expected a path/to/file, something went wrong please try again.\n"
+dir_path_err = r + "[-] expected a path/to/dir/, something went wrong please try again.\n"
 
 
 def banner():
     ascii = """
-    {}__      _________      _____ _      _____ 
+    {}__      _________      _____ _      _____
     {}\ \    / /__   __|    / ____| |    |_   _|
-    {} \ \  / /   | |______| |    | |      | |  
-    {}  \ \/ /    | |______| |    | |      | |  
-    {}   \  /     | |      | |____| |____ _| |_ 
+    {} \ \  / /   | |______| |    | |      | |
+    {}  \ \/ /    | |______| |    | |      | |
+    {}   \  /     | |      | |____| |____ _| |_
     {}    \/      |_|       \_____|______|_____|
-    
+
     {}\t\t\t By Isa Ebrahim - 0xRar
     {}
     """
@@ -127,7 +128,7 @@ def file_last_analysis(hash, client: vt.Client):
     """
     Get Information About a File Hash
     """
-    
+
     try:
         hash_obj = client.get_object("/files/{}", hash)
 
@@ -196,6 +197,17 @@ def file_scanner(path, client: vt.Client):
     else:
         print(completed)
 
+def dir_scanner(path, client: vt.Client):
+    """
+    Scans all the files in a specified directory
+    """
+
+    if not os.path.isdir(path):
+        print(dir_path_err)
+        sys.exit(1)
+
+    for file in os.listdir(path):
+        file_scanner(file, client)
 
 def main():
     """
@@ -217,6 +229,9 @@ def main():
 
     elif args.file_scan:  # file scanner
         file_scanner(path=args.file_scan, client=client)
+
+    elif args.dir_scan: # dir scanner
+        dir_scanner(path=args.dir_scan, client=client)
 
     client.close()
 
@@ -251,6 +266,12 @@ if __name__ == "__main__":
         "-scanf",
         dest="file_scan",
         help="file location to scan and detect malware and other breaches",
+    )
+
+    parser.add_argument(
+        "-scand",
+        dest="dir_scan",
+        help="path of a directory that contains files to scan to detect malware and other breaches",
     )
     args = parser.parse_args()
 
