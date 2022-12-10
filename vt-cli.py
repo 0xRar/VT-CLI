@@ -167,7 +167,8 @@ def file_scanner(path, client: vt.Client):
     try:
         with open(path, "rb") as f:
             if os.path.isfile(path):
-                hash = hashlib.file_digest(f, "md5").hexdigest()
+                #hash = hashlib.file_digest(f, "md5").hexdigest()
+                hash = hashlib.md5(f.read()).hexdigest()
                 scan = client.scan_file(f)
                 hash_obj = client.get_object("/files/{}", hash)
 
@@ -193,6 +194,9 @@ def file_scanner(path, client: vt.Client):
     except FileNotFoundError:
         print(file_hash_err)
         sys.exit("Exiting due to file not found")
+
+    except vt.error.APIError as NotFoundError:
+        sys.exit("File not found in VirusTotal dataset")
 
     else:
         print(completed)
