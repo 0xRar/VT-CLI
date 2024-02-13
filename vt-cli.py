@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 
-"""
-********************************************************************************
-Copyright (c) 2022 vt-cli developer (Isa Ebrahim - 0xRar)  (https://0xrar.net/)
-Discord: 0xRar#4432
-********************************************************************************
-"""
-
 import argparse
 import hashlib
 import os
-import random
-import string
 import sys
+import textwrap
 
 import vt
 from colorama import Fore, init
 from dotenv import load_dotenv
 from prettytable import PrettyTable
+
+"""
+========================================
+VT-CLI
+Author: Isa Ebrahim(0xRar) -- 0xrar.net
+Copyright © 2022 - 2024 
+========================================
+"""
 
 # Formatting variables
 init(autoreset=True)
@@ -36,18 +36,53 @@ file_hash_err = r + "[-] expected a path/to/file, something went wrong please tr
 
 
 def banner():
-    ascii = """
+    ascii = textwrap.dedent("""
     {}__      _________      _____ _      _____ 
     {}\ \    / /__   __|    / ____| |    |_   _|
     {} \ \  / /   | |______| |    | |      | |  
     {}  \ \/ /    | |______| |    | |      | |  
     {}   \  /     | |      | |____| |____ _| |_ 
     {}    \/      |_|       \_____|______|_____|
-    
+
     {}\t\t\t By Isa Ebrahim - 0xRar
     {}
-    """
+    """)
     print(ascii.format(b, b, w, w, b, b, c, w))
+
+
+def url_output(url, url_obj):
+    global output
+    output = textwrap.dedent(f"""
+    Analysis for: {y + url + Fore.RESET}
+
+    First Submission Date: {url_obj.first_submission_date}
+    Last Submission Date: {url_obj.last_submission_date}
+    Times Submitted: {url_obj.times_submitted}
+    Content Length: {url_obj.last_http_response_content_length} Bytes
+    Response Code: {url_obj.last_http_response_code}
+    Stats: {url_obj.last_analysis_stats}
+    """)
+
+
+def hash_output(hash, hash_obj):
+    global output
+    output = textwrap.dedent(f"""
+    Analysis for: {y + hash + Fore.RESET}
+
+    First Submission Date: {hash_obj.first_submission_date}
+    Last Submission Date: {hash_obj.last_submission_date}
+    Times Submitted: {hash_obj.times_submitted}
+    File Size: {hash_obj.size}
+    File Type: {hash_obj.type_tag}
+    File Type Description: {hash_obj.type_description}
+    Stats: {hash_obj.last_analysis_stats}
+    """)
+
+
+def out_printer(output):
+    output_table = PrettyTable(["Results"], align="l")
+    output_table.add_row([output])
+    print(output_table)
 
 
 def url_last_analysis(url: str, client: vt.Client):
@@ -59,23 +94,8 @@ def url_last_analysis(url: str, client: vt.Client):
         url_id = vt.url_id(url)
         url_obj = client.get_object("/urls/{}", url_id)
 
-        output = f"""
-        Analysis for: {y + url + Fore.RESET}
-
-        First Submission Date: {url_obj.first_submission_date}
-        Last Submission Date: {url_obj.last_submission_date}
-        Times Submitted: {url_obj.times_submitted}
-        Content Length: {url_obj.last_http_response_content_length} Bytes
-        Response Code: {url_obj.last_http_response_code}
-        Stats: {url_obj.last_analysis_stats}
-        """
-
-        output_table = PrettyTable()
-        output_table.field_names = ["Results"]
-        output_table.align = "l"
-        output_table.add_rows([[output]])
-
-        print(output_table)
+        url_output(url, url_obj)
+        out_printer(output)
 
     except:
         print(url_err)
@@ -97,24 +117,9 @@ def url_scanner(url: str, client: vt.Client):
         url_id = vt.url_id(url)
         url_obj = client.get_object("/urls/{}", url_id)
 
-        output = f"""
-        Analysis for: {y + url + Fore.RESET}
-
-        First Submission Date: {url_obj.first_submission_date}
-        Last Submission Date: {url_obj.last_submission_date}
-        Times Submitted: {url_obj.times_submitted}
-        Content Length: {url_obj.last_http_response_content_length} Bytes
-        Response Code: {url_obj.last_http_response_code}
-        Stats: {url_obj.last_analysis_stats}
-        """
-
-        output_table = PrettyTable()
-        output_table.field_names = ["Results"]
-        output_table.align = "l"
-        output_table.add_rows([[output]])
-
-        print(output_table)
-
+        url_output(url, url_obj)
+        out_printer(output)
+       
     except:
         print(url_err)
         sys.exit("Exiting due to a wrong url.")
@@ -127,29 +132,13 @@ def file_last_analysis(hash, client: vt.Client):
     """
     Get Information About a File Hash
     """
-    
+
     try:
         hash_obj = client.get_object("/files/{}", hash)
 
-        output = f"""
-        Analysis for: {y + hash + Fore.RESET}
-
-        First Submission Date: {hash_obj.first_submission_date}
-        Last Submission Date: {hash_obj.last_submission_date}
-        Times Submitted: {hash_obj.times_submitted}
-        File Size: {hash_obj.size}
-        File Type: {hash_obj.type_tag}
-        File Type Description: {hash_obj.type_description}
-        Stats: {hash_obj.last_analysis_stats}
-        """
-
-        output_table = PrettyTable()
-        output_table.field_names = ["Results"]
-        output_table.align = "l"
-        output_table.add_rows([[output]])
-
-        print(output_table)
-
+        hash_output(hash, hash_obj)
+        print(output)
+        
     except:
         print(hash_err)
         sys.exit("Exiting due to a wrong file hash type.")
@@ -167,10 +156,10 @@ def file_scanner(path, client: vt.Client):
         with open(path, "rb") as f:
             if os.path.isfile(path):
                 hash = hashlib.file_digest(f, "md5").hexdigest()
-                scan = client.scan_file(f)
+                client.scan_file(f)
                 hash_obj = client.get_object("/files/{}", hash)
 
-                output = f"""
+                output = textwrap.dedent(f"""
                 Analysis for: {y + os.path.basename(path) + Fore.RESET}
 
                 First Submission Date: {hash_obj.first_submission_date}
@@ -179,14 +168,9 @@ def file_scanner(path, client: vt.Client):
                 File Size: {hash_obj.size}
                 File Type Description: {hash_obj.type_description}
                 Stats: {hash_obj.last_analysis_stats}
-                """
+                """)
 
-                output_table = PrettyTable()
-                output_table.field_names = ["Results"]
-                output_table.align = "l"
-                output_table.add_rows([[output]])
-
-                print(output_table)
+                print(output) 
                 f.close()
 
     except FileNotFoundError:
